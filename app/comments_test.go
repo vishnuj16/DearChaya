@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/vishnuj16/dear-chaya/db"
-	"github.com/vishnuj16/dear-chaya/internal/story"
+	"github.com/vishnuj16/dear-chaya/story"
 )
 
 func newTestApp(t *testing.T) (http.Handler, func() []db.Comment) {

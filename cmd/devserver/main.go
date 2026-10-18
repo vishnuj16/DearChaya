@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/vishnuj16/dear-chaya/internal/app"
+	"github.com/vishnuj16/dear-chaya/app"
 )
 
 func main() {

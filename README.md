@@ -4,7 +4,7 @@ A single-story reading site for **"Dear Chaya"** by Vishnu Vyas: the story laid 
 
 Built with Go, [templ](https://templ.guide), Tailwind CSS v4 and Alpine.js, deployed as a Vercel Go function, with data in Upstash Redis.
 
-> **Keep this repository private.** The full story text lives in `internal/story/story.md`.
+> **Keep this repository private.** The full story text lives in `story/story.md`.
 
 ---
 
@@ -58,7 +58,7 @@ On Vercel the app **refuses to start** without Upstash credentials rather than s
 - Sessions last 7 days. Logins are limited to 5 attempts per 15 minutes per IP address.
 - While signed in, copy protection and analytics are off for you.
 
-The story in `internal/story/story.md` is only the **initial seed**: it is copied to Upstash on first start and never overwrites later edits. To reset to the file, delete the `dearchaya:story` key in the Upstash console and redeploy.
+The story in `story/story.md` is only the **initial seed**: it is copied to Upstash on first start and never overwrites later edits. To reset to the file, delete the `dearchaya:story` key in the Upstash console and redeploy.
 
 ---
 
@@ -72,25 +72,27 @@ The story in `internal/story/story.md` is only the **initial seed**: it is copie
 
 Every push to `main` redeploys automatically.
 
-`vercel.json` serves only `public/` as static files and sends every other request to the Go function. That keeps source files such as `internal/story/story.md` from being downloadable.
+`vercel.json` serves only `public/` as static files and sends every other request to the Go function. That keeps source files such as `story/story.md` from being downloadable.
 
 ---
 
 ## Project layout
 
 ```
-api/index.go            Vercel entry point (Handler); routing lives in internal/app
+api/index.go            Vercel entry point (Handler); routing lives in app
 cmd/devserver/          Local dev server (same router). Not named cmd/server on purpose:
                         Vercel would mistake that for a Go server app and skip api/
 cmd/adminsecret/        `make admin-secrets`
-internal/app/           HTTP handlers: pages, comments, auth, admin, security headers
-internal/story/         Bundled story (story.md) and its tiny markdown parser
+app/                    HTTP handlers: pages, comments, auth, admin, security headers
+story/                  Bundled story (story.md) and its tiny markdown parser
 db/                     Store interface; Upstash Redis client (REST, stdlib only); in-memory store
 templates/              templ components (+ generated *_templ.go)
 static/                 input.css → app.css, reader.js, fonts, images, vendored Alpine.js
 public/                 Files Vercel serves directly from its CDN (favicon.ico only)
 tools/make_icon.py      Regenerates the favicon set
 ```
+
+There is deliberately no `internal/` directory: Vercel compiles `api/index.go` as a package outside this module's tree, and Go forbids importing `internal/` packages from outside. `make build` checks for this.
 
 ### Routes
 
@@ -143,7 +145,7 @@ Loaded only when `GA_MEASUREMENT_ID` is set, and never for the signed-in author.
 
 These are **deterrents only**. No website can block operating-system screenshots or a determined copier (view-source, reader mode, JavaScript disabled).
 
-**Security headers** (`internal/app/security.go`):
+**Security headers** (`app/security.go`):
 - a strict Content Security Policy, with a per-request nonce for inline scripts;
 - `frame-ancestors 'none'`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, and HSTS on HTTPS.
 
@@ -163,7 +165,7 @@ go test -race ./...                 # with the race detector
 ```
 
 - `db/store_test.go` runs the same checks against the in-memory store and a fake Upstash server.
-- `internal/app/*_test.go` covers comments, auth (including forged and expired tokens), admin endpoints, rate limits, security headers and the analytics on/off rules.
+- `app/*_test.go` covers comments, auth (including forged and expired tokens), admin endpoints, rate limits, security headers and the analytics on/off rules.
 
 ---
 

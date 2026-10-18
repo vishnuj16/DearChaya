@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/vishnuj16/dear-chaya/db"
-	"github.com/vishnuj16/dear-chaya/internal/story"
+	"github.com/vishnuj16/dear-chaya/story"
 	"github.com/vishnuj16/dear-chaya/static"
 	"github.com/vishnuj16/dear-chaya/templates"
 )

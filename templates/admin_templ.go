@@ -8,7 +8,7 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/vishnuj16/dear-chaya/internal/story"
+import "github.com/vishnuj16/dear-chaya/story"
 
 // AdminDialogs holds the hidden author UI. It opens on a triple-click of the
 // footer "©" or Ctrl+Shift+A. Signed out, that shows the password prompt;

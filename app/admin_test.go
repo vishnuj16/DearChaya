@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/vishnuj16/dear-chaya/db"
-	"github.com/vishnuj16/dear-chaya/internal/story"
+	"github.com/vishnuj16/dear-chaya/story"
 	"golang.org/x/crypto/bcrypt"
 )
 

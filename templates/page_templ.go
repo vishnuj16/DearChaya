@@ -12,8 +12,8 @@ import (
 	"strconv"
 
 	"github.com/vishnuj16/dear-chaya/db"
-	"github.com/vishnuj16/dear-chaya/internal/story"
 	"github.com/vishnuj16/dear-chaya/static"
+	"github.com/vishnuj16/dear-chaya/story"
 )
 
 // Page is the story showcase: a spiral-bound notebook resting on a desk,

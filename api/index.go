@@ -1,5 +1,5 @@
 // Package handler is the Vercel Go function entry point. vercel.json rewrites
-// every non-static request here; routing happens in internal/app.
+// every non-static request here; routing happens in the app package.
 package handler
 
 import (
@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/vishnuj16/dear-chaya/internal/app"
+	"github.com/vishnuj16/dear-chaya/app"
 )
 
 var (

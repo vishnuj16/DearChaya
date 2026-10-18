@@ -18,6 +18,10 @@ test:
 	go vet ./...
 	go build ./...
 	go test ./...
+	@# Vercel compiles api/ as a package outside this module's tree, so api/
+	@# may not import any internal/ package (the build fails only on Vercel).
+	@if go list -f '{{join .Imports "\n"}}' ./api | grep -q '/internal'; then \
+		echo "api/ imports an internal/ package; Vercel cannot build that"; exit 1; fi
 
 # Loads .env if present, so local runs can use your Upstash database.
 dev: generate css
