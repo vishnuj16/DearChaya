@@ -1,5 +1,5 @@
 // Package app wires the database, routes and templates. It is shared by the
-// Vercel function (api/index.go) and the local dev server (cmd/server).
+// Vercel function (api/index.go) and the local dev server (cmd/devserver).
 package app
 
 import (

@@ -1,4 +1,4 @@
-// Command server runs the site locally with the same router Vercel uses.
+// Command devserver runs the site locally with the same router Vercel uses.
 package main
 
 import (

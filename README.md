@@ -65,7 +65,7 @@ The story in `internal/story/story.md` is only the **initial seed**: it is copie
 ## Deploying (Vercel)
 
 1. `make build`, then commit and push to GitHub (private repo).
-2. Vercel → **Add New → Project** → import the repo. Framework preset **Other**; leave the build and output settings as they are (`vercel.json` handles them).
+2. Vercel → **Add New → Project** → import the repo. Framework preset **Other** (`vercel.json` also forces this with `"framework": null`); leave the build and output settings as they are.
 3. Add the environment variables above, then **Deploy**.
 4. Check `https://<project>.vercel.app/health` → `{"status":"ok","store":"ok"}`.
 5. **Settings → Functions → Function Region**: pick the region closest to your Upstash database, then redeploy.
@@ -80,7 +80,8 @@ Every push to `main` redeploys automatically.
 
 ```
 api/index.go            Vercel entry point (Handler); routing lives in internal/app
-cmd/server/             Local dev server (same router)
+cmd/devserver/          Local dev server (same router). Not named cmd/server on purpose:
+                        Vercel would mistake that for a Go server app and skip api/
 cmd/adminsecret/        `make admin-secrets`
 internal/app/           HTTP handlers: pages, comments, auth, admin, security headers
 internal/story/         Bundled story (story.md) and its tiny markdown parser

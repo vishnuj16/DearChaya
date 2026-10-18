@@ -21,7 +21,7 @@ test:
 
 # Loads .env if present, so local runs can use your Upstash database.
 dev: generate css
-	set -a; [ -f .env ] && . ./.env; set +a; go run ./cmd/server
+	set -a; [ -f .env ] && . ./.env; set +a; go run ./cmd/devserver
 
 watch-css:
 	$(TAILWIND) -i static/input.css -o static/app.css --watch
