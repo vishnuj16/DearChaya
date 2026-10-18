@@ -1,0 +1,14 @@
+package templates
+
+// NotFound is the 404 page: a torn-out notebook page pointing home.
+templ NotFound(site Site) {
+	@Layout("Page not found · Dear Chaya", "This page isn't in the diary.", site) {
+		<main class="grid min-h-dvh place-items-center px-4">
+			<div class="notebook w-full max-w-md rounded-lg text-center text-ink shadow-xl dark:text-mist dark:shadow-black/50">
+				<h1 class="font-script text-5xl font-bold leading-[calc(var(--line)*2)] text-pen dark:text-gold">Torn out…</h1>
+				<p class="mb-(--line)">This page isn't in the diary.</p>
+				<p class="mb-(--line)"><a href="/" class="font-bold text-pen underline decoration-2 underline-offset-4 dark:text-gold">Back to Dear Chaya</a></p>
+			</div>
+		</main>
+	}
+}

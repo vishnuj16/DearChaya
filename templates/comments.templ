@@ -1,0 +1,120 @@
+package templates
+
+import (
+	"strconv"
+
+	"github.com/vishnuj16/dear-chaya/db"
+)
+
+// Notes is the "Notes & Thoughts" page at the back of the notebook: a form
+// written straight onto the ruled lines, then the readers' notes, newest first.
+// Every block is a whole number of --line tall so the writing stays on the rules.
+templ Notes(comments []db.Comment, admin bool) {
+	<section
+		id="notes"
+		aria-labelledby="notes-title"
+		class="notebook relative mx-auto mb-10 max-w-2xl rounded-lg text-ink shadow-xl dark:text-mist dark:shadow-black/50"
+		x-data={ "notes(" + strconv.Itoa(len(comments)) + ")" }
+	>
+		@spiral("coil-notes")
+		<h2 id="notes-title" class="notebook-heading text-pen dark:text-gold">Notes &amp; Thoughts</h2>
+		<form
+			action="/api/comments"
+			method="post"
+			x-on:submit.prevent="submit"
+			novalidate
+		>
+			<label for="note-name" class="sr-only">Your name (optional)</label>
+			<input
+				id="note-name"
+				name="author_name"
+				type="text"
+				maxlength="60"
+				autocomplete="name"
+				placeholder="Your Name (Optional)"
+				x-model="name"
+				class="notebook-field"
+			/>
+			<label for="note-content" class="sr-only">Your note</label>
+			<textarea
+				id="note-content"
+				name="content"
+				rows="3"
+				maxlength="2000"
+				required
+				placeholder="Leave a note for Kiran..."
+				x-model="content"
+				x-ref="content"
+				x-on:input="grow($el)"
+				class="notebook-field resize-none overflow-hidden"
+			></textarea>
+			// Honeypot: off-screen and out of the tab order; people never see it.
+			<div aria-hidden="true" class="absolute -left-[9999px] h-px w-px overflow-hidden">
+				<label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" x-model="website"/></label>
+			</div>
+			<div class="flex h-(--line) items-center">
+				<button
+					type="submit"
+					class="h-[calc(var(--line)-6px)] rounded-md border-2 border-pen/70 px-4 font-script text-[1.35em] font-bold leading-none text-pen transition hover:bg-pen hover:text-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pen disabled:cursor-wait disabled:opacity-60 dark:border-gold/70 dark:text-gold dark:hover:bg-gold dark:hover:text-night-page dark:focus-visible:outline-gold"
+					x-bind:disabled="submitting"
+				>
+					<span x-show="!submitting">Pin this note</span>
+					<span x-show="submitting" x-cloak>Writing…</span>
+				</button>
+			</div>
+			// Always one ruled line tall, so showing an error never shifts the page off the rules.
+			<p
+				class="h-(--line) truncate font-sans text-sm leading-(--line) text-rule dark:text-[#e8908a]"
+				role="status"
+				aria-live="polite"
+				x-text="error"
+			></p>
+		</form>
+		// Rendered even when there are notes (hidden), so it can reappear if the
+		// author deletes the last one.
+		<p
+			class="mb-(--line) text-ink/55 dark:text-mist/50"
+			x-show="count === 0"
+			if len(comments) > 0 {
+				style="display: none"
+			}
+		>No notes yet. Be the first to write one.</p>
+		<ol x-ref="feed" class="list-none">
+			for _, c := range comments {
+				@CommentItem(c, admin)
+			}
+		</ol>
+	</section>
+}
+
+// CommentItem renders one reader note. It is also returned by
+// POST /api/comments so new notes appear without a reload. With admin set,
+// it carries the author's Delete action.
+templ CommentItem(c db.Comment, admin bool) {
+	<li class="mb-(--line) transition-opacity duration-300" data-comment-id={ c.ID }>
+		<p class="flex h-(--line) items-baseline gap-2 overflow-hidden">
+			<span class="truncate font-bold text-pen dark:text-gold">{ c.AuthorName }</span>
+			<span aria-hidden="true" class="font-sans text-ink/35 dark:text-mist/30">·</span>
+			<time
+				datetime={ c.CreatedAt.UTC().Format("2006-01-02T15:04:05Z") }
+				data-relative
+				class="shrink-0 font-sans text-xs text-ink/50 dark:text-mist/45"
+			>{ c.CreatedAt.UTC().Format("2 Jan 2006") }</time>
+			if admin {
+				// A red-ink margin stamp, sized to sit inside one ruled line.
+				<button
+					type="button"
+					class="ink-stamp ml-auto"
+					x-on:click="remove($el.closest('li'))"
+					aria-label={ "Delete note by " + c.AuthorName }
+				>
+					<svg class="size-[0.8em]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true">
+						<path d="M6 6l12 12M18 6L6 18"></path>
+					</svg>
+					Delete
+				</button>
+			}
+		</p>
+		<p class="whitespace-pre-line break-words">{ c.Content }</p>
+	</li>
+}

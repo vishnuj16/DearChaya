@@ -1,0 +1,67 @@
+package templates
+
+import "github.com/vishnuj16/dear-chaya/static"
+
+// Layout is the HTML shell shared by every page.
+templ Layout(title, description string, site Site) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+			<title>{ title }</title>
+			<meta name="description" content={ description }/>
+			<meta property="og:title" content={ title }/>
+			<meta property="og:description" content={ description }/>
+			<meta property="og:type" content="article"/>
+			<meta name="theme-color" content="#F4EFE6" media="(prefers-color-scheme: light)"/>
+			<meta name="theme-color" content="#0F141C" media="(prefers-color-scheme: dark)"/>
+			// Apply the saved theme before first paint to avoid a light/dark flash.
+			<script nonce={ templ.GetNonce(ctx) }>
+				(function () {
+					try {
+						var t = localStorage.getItem("theme");
+						if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches)) {
+							document.documentElement.classList.add("dark");
+						}
+					} catch (e) {}
+				})();
+			</script>
+			// Analytics is skipped for the signed-in author so your own visits
+			// don't inflate reader numbers.
+			if site.GAMeasurementID != "" && !site.Admin {
+				@ga4(site.GAMeasurementID)
+			}
+			<link rel="icon" href="/favicon.ico" sizes="any"/>
+			<link rel="icon" type="image/png" sizes="64x64" href={ static.URL("img/favicon.png") }/>
+			<link rel="manifest" href="/site.webmanifest"/>
+			<link rel="apple-touch-icon" href={ static.URL("img/apple-touch-icon.png") }/>
+			<link rel="preload" as="font" type="font/woff2" href="/static/fonts/kalam-latin-954410601a.woff2" crossorigin/>
+			<link rel="stylesheet" href={ static.URL("app.css") }/>
+			// reader.js registers Alpine components on alpine:init, so it must run before Alpine (defer preserves order).
+			// Alpine is self-hosted (static/vendor) rather than loaded from a CDN.
+			<script defer src={ static.URL("reader.js") }></script>
+			<script defer src={ static.URL("vendor/alpine.min.js") }></script>
+		</head>
+		<body
+			class={ "min-h-dvh bg-desk text-ink antialiased transition-colors duration-300 dark:bg-night-desk dark:text-mist", templ.KV("protected", !site.Admin) }
+		>
+			{ children... }
+			if !site.Admin {
+				<div class="privacy-shield" aria-hidden="true">Dear Chaya is paused. Return to this tab to keep reading.</div>
+			}
+		</body>
+	</html>
+}
+
+// ga4 is the standard gtag.js snippet. The ID is passed as a data attribute
+// because templ does not interpolate inside inline script bodies.
+templ ga4(id string) {
+	<script async src={ "https://www.googletagmanager.com/gtag/js?id=" + id }></script>
+	<script nonce={ templ.GetNonce(ctx) } data-ga-id={ id }>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag("js", new Date());
+		gtag("config", document.currentScript.dataset.gaId);
+	</script>
+}

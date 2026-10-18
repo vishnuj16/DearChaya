@@ -1,0 +1,186 @@
+package templates
+
+import (
+	"strconv"
+
+	"github.com/vishnuj16/dear-chaya/db"
+	"github.com/vishnuj16/dear-chaya/internal/story"
+	"github.com/vishnuj16/dear-chaya/static"
+)
+
+// Page is the story showcase: a spiral-bound notebook resting on a desk,
+// under a sticky glass top bar that tracks reading progress.
+templ Page(v story.View, comments []db.Comment, site Site) {
+	@Layout(v.Title, "A short story by Vishnu Vyas — a ten-year-old's diary, and the friend he finds in it.", site) {
+		<div class="flex min-h-dvh flex-col" x-data="reader">
+			@topBar(v, site.Admin)
+			<main class="flex-1 px-2 sm:px-6">
+				if site.Admin {
+					@authorRibbon()
+				}
+				<article
+					x-ref="story"
+					class="notebook relative mx-auto my-10 max-w-2xl rounded-lg text-ink shadow-xl dark:text-mist dark:shadow-black/50"
+				>
+					@spiral("coil-story")
+					for _, p := range v.Paragraphs {
+						if p.Callout {
+							<p class="mb-(--line) whitespace-pre-line border-l-2 border-pen/40 pl-4 text-pen dark:border-gold/50 dark:text-gold">
+								@spans(p.Spans)
+							</p>
+						} else {
+							<p class="mb-(--line) whitespace-pre-line">
+								@spans(p.Spans)
+							</p>
+						}
+					}
+				</article>
+				@Notes(comments, site.Admin)
+			</main>
+			<footer class="flex flex-col items-center gap-3 px-6 pb-10 pt-2 text-center font-sans text-sm text-ink/55 dark:text-mist/45">
+				@themedImage("logo", "Stories by Vyas", "h-28 w-auto", true)
+				// Triple-click (event.detail === 3) opens the hidden author sign-in.
+				<span class="select-none" x-on:click="$event.detail === 3 && $dispatch('admin-open')">© Vishnu Vyas</span>
+			</footer>
+			@AdminDialogs(v, site.Admin)
+		</div>
+	}
+}
+
+// authorRibbon tells the author they're signed in. Editing lives in the
+// sticky header's Edit Story button, so it is reachable from anywhere.
+templ authorRibbon() {
+	<div class="mx-auto mt-6 flex max-w-2xl flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-lg border border-dashed border-pen/40 bg-page/70 px-4 py-2.5 font-sans text-sm text-pen dark:border-gold/40 dark:bg-night-page/70 dark:text-gold">
+		<span class="flex items-center gap-2">
+			<span class="font-script text-xl font-bold leading-none">Author mode</span>
+			<span class="text-xs text-ink/55 dark:text-mist/50">readers don't see this · copy protection is off for you</span>
+		</span>
+		<span class="flex items-center gap-2">
+			<button
+				type="button"
+				x-on:click="$dispatch('admin-logout')"
+				class="rounded-full px-3 py-1 text-xs text-ink/65 transition hover:bg-callout focus-visible:outline-2 focus-visible:outline-pen dark:text-mist/65 dark:hover:bg-night-callout dark:focus-visible:outline-gold"
+			>Sign out</button>
+		</span>
+	</div>
+}
+
+templ spans(ss []story.Span) {
+	for _, s := range ss {
+		if s.Italic {
+			<em>{ s.Text }</em>
+		} else {
+			{ s.Text }
+		}
+	}
+}
+
+// spiral draws the wire binding along the top edge: a punched hole in the
+// paper (showing the desk through it) with a metal coil rising out of each.
+// id must be unique per page because the SVG pattern is referenced by id.
+templ spiral(id string) {
+	<svg aria-hidden="true" focusable="false" class="pointer-events-none absolute -top-3.5 left-4 h-9 w-[calc(100%-2rem)] overflow-visible">
+		<defs>
+			<linearGradient id={ id + "-metal" } x1="0" x2="1" y1="0" y2="0">
+				<stop offset="0" stop-color="#4b5563"></stop>
+				<stop offset="0.35" stop-color="#e5e7eb"></stop>
+				<stop offset="0.65" stop-color="#9ca3af"></stop>
+				<stop offset="1" stop-color="#374151"></stop>
+			</linearGradient>
+			<pattern id={ id } width="26" height="36" patternUnits="userSpaceOnUse">
+				<circle cx="13" cy="25" r="5" class="fill-desk dark:fill-night-desk"></circle>
+				<circle cx="13" cy="25.5" r="5" fill="none" stroke="rgb(0 0 0 / 0.18)"></circle>
+				<rect x="10" y="2" width="6" height="24" rx="3" fill={ "url(#" + id + "-metal)" }></rect>
+			</pattern>
+		</defs>
+		<rect width="100%" height="100%" fill={ "url(#" + id + ")" }></rect>
+	</svg>
+}
+
+// themedImage shows the dark-ink artwork in light mode and the white artwork
+// in dark mode. The hidden one is display:none, so with lazy loading only
+// the visible one is fetched.
+templ themedImage(name, alt, class string, lazy bool) {
+	<img
+		src={ static.URL("img/" + name + "-ink.png") }
+		alt={ alt }
+		class={ class, "dark:hidden" }
+		if lazy {
+			loading="lazy"
+		}
+	/>
+	<img
+		src={ static.URL("img/" + name + "-white.png") }
+		alt={ alt }
+		class={ class, "hidden dark:block" }
+		if lazy {
+			loading="lazy"
+		}
+	/>
+}
+
+// topBar: label mark | centred title and byline | reading time and theme toggle.
+// Equal 1fr side columns keep the title truly centred whatever the sides hold.
+templ topBar(v story.View, admin bool) {
+	<header class="sticky top-0 z-20 border-b border-page-edge/70 bg-desk/70 px-3 backdrop-blur-md sm:px-6 dark:border-night-edge/70 dark:bg-night-desk/70">
+		<div class="mx-auto grid h-16 max-w-2xl grid-cols-[1fr_auto_1fr] items-center gap-2 px-1 font-sans text-sm">
+			<div class="justify-self-start">
+				@themedImage("mark", "Stories by Vyas", "h-9 w-auto", false)
+			</div>
+			<div class="text-center">
+				<h1 class="font-script text-[1.75rem] font-bold leading-none text-pen sm:text-[2rem] dark:text-gold">{ v.Title }</h1>
+				<p class="mt-1 text-[0.625rem] uppercase tracking-[0.22em] text-ink/60 sm:text-[0.6875rem] dark:text-mist/55">by Vishnu Vyas</p>
+			</div>
+			<div class="flex items-center gap-1 justify-self-end sm:gap-3">
+				if admin {
+					<button
+						type="button"
+						x-on:click="$dispatch('story-edit')"
+						aria-label="Edit Story"
+						class="flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full border border-pen/50 px-2.5 text-pen transition hover:bg-pen hover:text-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pen sm:px-3 dark:border-gold/50 dark:text-gold dark:hover:bg-gold dark:hover:text-night-page dark:focus-visible:outline-gold"
+					>
+						<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M12 20h9"></path>
+							<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+						</svg>
+						<span class="text-xs font-medium">Edit<span class="hidden sm:inline">{ " Story" }</span></span>
+					</button>
+				}
+				<span
+					class={ "whitespace-nowrap text-xs text-ink/60 sm:text-sm dark:text-mist/60", templ.KV("hidden sm:inline", admin) }
+				>
+					{ strconv.Itoa(v.ReadingMinutes) } min<span class="hidden sm:inline">{ " read" }</span>
+				</span>
+				<button
+					type="button"
+					class="grid size-9 place-items-center rounded-full text-ink/70 transition hover:bg-callout focus-visible:outline-2 focus-visible:outline-pen dark:text-mist/70 dark:hover:bg-night-callout dark:focus-visible:outline-gold"
+					x-on:click="toggleTheme()"
+					x-bind:aria-label="dark ? 'Switch to light theme' : 'Switch to dark theme'"
+					aria-label="Toggle theme"
+				>
+					<svg x-show="!dark" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+						<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+					</svg>
+					<svg x-show="dark" x-cloak class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+						<circle cx="12" cy="12" r="4"></circle>
+						<path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+					</svg>
+				</button>
+			</div>
+		</div>
+		<div
+			class="absolute inset-x-0 -bottom-px h-0.5"
+			role="progressbar"
+			aria-label="Reading progress"
+			aria-valuemin="0"
+			aria-valuemax="100"
+			x-bind:aria-valuenow="Math.round(progress * 100)"
+		>
+			<div
+				class="h-full origin-left bg-pen dark:bg-gold"
+				style="transform: scaleX(0)"
+				x-bind:style="{ transform: 'scaleX(' + progress + ')' }"
+			></div>
+		</div>
+	</header>
+}

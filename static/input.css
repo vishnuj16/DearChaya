@@ -1,0 +1,352 @@
+@import "tailwindcss" source(none);
+@source "../templates/*.templ";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Self-hosted fonts (latin + latin-ext from Google Fonts, OFL licensed), so
+ * readers' browsers never contact Google. Each browser only downloads the
+ * subsets the page actually uses (unicode-range). File names carry a content
+ * hash, so they are cached forever.
+ */
+/* Caveat 700, latin-ext */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/static/fonts/caveat-latin-ext-f97b55783e.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Caveat 700, latin */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/static/fonts/caveat-latin-15f9638095.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Inter 400, latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/fonts/inter-latin-ext-34b9c504ca.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Inter 400, latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/fonts/inter-latin-3100e775e8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Inter 500, latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/static/fonts/inter-latin-ext-34b9c504ca.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Inter 500, latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/static/fonts/inter-latin-3100e775e8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Kalam 400, latin-ext */
+@font-face {
+  font-family: 'Kalam';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/fonts/kalam-latin-ext-1099e56781.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Kalam 400, latin */
+@font-face {
+  font-family: 'Kalam';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/fonts/kalam-latin-954410601a.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Kalam 700, latin-ext */
+@font-face {
+  font-family: 'Kalam';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/static/fonts/kalam-latin-ext-1fc176f6b1.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Kalam 700, latin */
+@font-face {
+  font-family: 'Kalam';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/static/fonts/kalam-latin-252063af6a.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@theme {
+  /* Light — notebook on a warm desk */
+  --color-desk: #f4efe6;
+  --color-page: #faf7f2;
+  --color-page-edge: #e8e1d5;
+  --color-ink: #1e293b;
+  --color-pen: #2b4c7e;
+  --color-rule: #c85a54;
+  --color-callout: #f2ece1;
+
+  /* Dark — night reader */
+  --color-night-desk: #0f141c;
+  --color-night-page: #161d27;
+  --color-night-edge: #2a3546;
+  --color-mist: #e2e8f0;
+  --color-gold: #d97706;
+  --color-night-callout: #202b3c;
+
+  --font-hand: "Kalam", "Patrick Hand", cursive; /* story body */
+  --font-script: "Caveat", "Kalam", cursive; /* titles */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 4rem;
+  }
+  [x-cloak] {
+    display: none !important;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-pen) 18%, transparent);
+  }
+  .dark ::selection {
+    background: color-mix(in srgb, var(--color-gold) 30%, transparent);
+  }
+}
+
+@layer components {
+  /*
+   * Ruled notebook paper. Every block on the page is a whole number of
+   * --line tall, so text stays on the rules all the way down.
+   *
+   * --rule-y puts each rule on the Kalam baseline: with line-height L and
+   * font-size F, Kalam's baseline (ascent 1.063, descent 0.531) sits at
+   * L/2 + 0.266F from the top of its line box. +1px lets letters rest on it.
+   */
+  .notebook {
+    --fs: 1rem;
+    --line: 1.875rem;
+    --margin-x: 1.75rem;
+    --pad-top: calc(var(--line) * 2);
+    --rule-y: calc(var(--line) / 2 + var(--fs) * 0.266 + 1px);
+    --rule-color: rgb(120 150 196 / 0.38);
+    --margin-color: rgb(200 90 84 / 0.6);
+
+    font-family: var(--font-hand);
+    font-size: var(--fs);
+    line-height: var(--line);
+    padding: var(--pad-top) 0.875rem calc(var(--line) * 2) calc(var(--margin-x) + 0.625rem);
+    background-color: var(--color-page);
+    background-image:
+      linear-gradient(
+        to right,
+        transparent calc(var(--margin-x) - 1px),
+        var(--margin-color) calc(var(--margin-x) - 1px) calc(var(--margin-x) + 1px),
+        transparent calc(var(--margin-x) + 1px)
+      ),
+      linear-gradient(
+        to bottom,
+        transparent var(--rule-y),
+        var(--rule-color) var(--rule-y) calc(var(--rule-y) + 1px),
+        transparent calc(var(--rule-y) + 1px)
+      );
+    background-size: 100% 100%, 100% var(--line);
+    background-repeat: no-repeat, repeat-y;
+    background-position: 0 0, 0 var(--pad-top);
+  }
+
+  @media (width >= 40rem) {
+    .notebook {
+      --fs: 1.25rem;
+      --line: 2.375rem;
+      --margin-x: 4rem;
+      padding-right: 2.5rem;
+      padding-left: calc(var(--margin-x) + 0.875rem);
+    }
+  }
+
+  .dark .notebook {
+    --rule-color: rgb(148 163 184 / 0.16);
+    --margin-color: rgb(200 90 84 / 0.42);
+    background-color: var(--color-night-page);
+  }
+
+  /*
+   * A heading two ruled lines tall. Caveat's baseline sits 0.33F below the
+   * middle of that box; shift it down so it lands on the second rule.
+   */
+  .notebook-heading {
+    --fs-title: 2.5rem;
+    position: relative;
+    top: calc(var(--rule-y) - var(--fs-title) * 0.33);
+    margin-bottom: var(--line);
+    font-family: var(--font-script);
+    font-size: var(--fs-title);
+    font-weight: 700;
+    line-height: calc(var(--line) * 2);
+  }
+
+  @media (width >= 40rem) {
+    .notebook-heading {
+      --fs-title: 3rem;
+    }
+  }
+
+  /* Form fields written straight onto the page: no box, just the ruled lines. */
+  .notebook-field {
+    display: block;
+    width: 100%;
+    min-height: var(--line);
+    padding: 0;
+    border: 0;
+    border-radius: 0.25rem;
+    background: transparent;
+    color: inherit;
+    line-height: var(--line);
+    outline: none;
+    transition: background-color 150ms;
+  }
+  textarea.notebook-field {
+    min-height: calc(var(--line) * 3);
+  }
+  .notebook-field::placeholder {
+    color: color-mix(in srgb, currentColor 45%, transparent);
+  }
+  .notebook-field:focus-visible {
+    background: color-mix(in srgb, var(--color-pen) 7%, transparent);
+  }
+  .dark .notebook-field:focus-visible {
+    background: color-mix(in srgb, var(--color-gold) 9%, transparent);
+  }
+
+  /*
+   * The author's Delete action, drawn like a margin annotation in red ink:
+   * handwriting, a dashed stamp outline, and a soft paper tint on hover.
+   * Fits inside one ruled line so the notes below stay on the rules.
+   */
+  .ink-stamp {
+    --stamp: var(--color-rule);
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.2em;
+    height: calc(var(--line) - 0.5rem);
+    padding: 0 0.6em;
+    border: 1.5px dashed color-mix(in srgb, var(--stamp) 55%, transparent);
+    border-radius: 999px;
+    color: var(--stamp);
+    font-family: var(--font-script);
+    font-size: 1.05em;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 150ms, border-color 150ms;
+    align-self: center;
+  }
+  .ink-stamp:hover {
+    border-style: solid;
+    border-color: var(--stamp);
+    background: color-mix(in srgb, var(--stamp) 10%, transparent);
+  }
+  .ink-stamp:focus-visible {
+    outline: 2px solid var(--stamp);
+    outline-offset: 2px;
+  }
+  /* Same ink, lifted a little so it stays legible on the midnight page. */
+  .dark .ink-stamp {
+    --stamp: #e07a72;
+  }
+  .dark .ink-stamp:hover {
+    background: color-mix(in srgb, var(--stamp) 14%, transparent);
+  }
+
+  /*
+   * Reader privacy (deterrents; see static/reader.js). Only applied when the
+   * body has .protected, which is every visitor except the signed-in author.
+   * Form fields stay selectable so readers can still write notes.
+   */
+  .protected {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  .protected :is(input, textarea) {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  .protected img {
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+}
+
+/* Black screen shown while the page is hidden or loses focus. */
+.privacy-shield {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  place-items: center;
+  padding: 2rem;
+  background: #000;
+  color: #9ca3af;
+  font: 500 0.875rem/1.5 var(--font-sans);
+  text-align: center;
+}
+.shielded .privacy-shield {
+  display: grid;
+}
+
+/* Printing / "Save as PDF" produces a black page. */
+@media print {
+  /* Browsers drop backgrounds when printing unless told otherwise. */
+  .protected {
+    background: #000 !important;
+    transition: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .protected > * {
+    display: none !important;
+  }
+  .protected::after {
+    content: "Printing is disabled for Dear Chaya.";
+    display: block;
+    padding: 2rem;
+    color: #fff;
+    font: 14px sans-serif;
+  }
+  @page {
+    margin: 0;
+  }
+  html:has(.protected) {
+    background: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

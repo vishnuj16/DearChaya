@@ -1,0 +1,37 @@
+# --- Secrets: never commit ------------------------------------------------
+# .env holds the Upstash token, the admin password hash and JWT_SECRET.
+.env
+.env.*
+!.env.example
+
+# --- Dependencies -----------------------------------------------------------
+node_modules/
+
+# --- Local data and build output -------------------------------------------
+# (Old local SQLite files from before the move to Upstash.)
+*.db
+*.db-shm
+*.db-wal
+# Binaries from `go build` (cmd/server, cmd/adminsecret).
+/server
+/adminsecret
+*.exe
+*.test
+*.out
+coverage.*
+
+# --- Vercel CLI ---------------------------------------------------------------
+.vercel/
+
+# --- OS and editor clutter -----------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*~
+
+# NOTE: do NOT ignore templates/*_templ.go or static/app.css. Vercel does not
+# run templ or Tailwind, so the generated files must be committed.
+# Run `make build` before every commit.
